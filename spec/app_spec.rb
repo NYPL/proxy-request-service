@@ -1,15 +1,13 @@
-require_relative './spec_helper'
+require_relative 'spec_helper'
 
-require_relative '../app'
+require_relative File.join('..', 'application')
+require_relative File.join('..', 'lib', 'kms_client')
 
-describe 'app', :type => :controller do
+describe Application do
+  let(:mock_sqs_client) { double('SqsClient', write: { message_id: 'message id' } ) }
+
   before do
-    $initialized = true
-
-    $logger = NyplLogFormatter.new(STDOUT, level: ENV['LOG_LEVEL'] || 'info')
-
-    $sqs_client = instance_double('SqsClient')
-    allow($sqs_client).to receive(:write).and_return({ message_id: 'fake-message-id' })
+    allow(SqsClient).to receive(:new).and_return(mock_sqs_client)
   end
 
   describe '#handle_event' do
