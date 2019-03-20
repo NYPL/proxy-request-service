@@ -1,0 +1,65 @@
+language:
+- ruby
+install:
+- bundle install
+cache:
+- bundler
+script:
+- bundle exec rspec -fd
+deploy:
+- provider: lambda
+  function_name: ProxyRequestService-development
+  description: A small service for storing HTTP requests to play later via ProxyRequestConsumer
+  region: us-east-1
+  role: arn:aws:iam::224280085904:role/lambda_basic_execution
+  runtime: ruby2.5
+  module_name: app
+  handler_name: handle_event
+  environment_variables:
+  - SQS_QUEUE_URL=na
+  - LOG_LEVEL=debug
+  skip_cleanup: true
+  access_key_id: "$AWS_ACCESS_KEY_ID_DEVELOPMENT"
+  secret_access_key: "$AWS_SECRET_ACCESS_KEY_DEVELOPMENT"
+  on:
+    branch: development
+- provider: lambda
+  function_name: ProxyRequestService-qa
+  description: A small service for storing HTTP requests to play later via ProxyRequestConsumer
+  region: us-east-1
+  role: arn:aws:iam::946183545209:role/lambda-full-access
+  runtime: ruby2.5
+  module_name: app
+  handler_name: handle_event
+  environment_variables:
+  - SQS_QUEUE_URL=AQECAHh7ea2tyZ6phZgT4B9BDKwguhlFtRC6hgt+7HbmeFsrsgAAAK4wgasGCSqGSIb3DQEHBqCBnTCBmgIBADCBlAYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAwe1oC58ZpRLL/MS5wCARCAZ5Kqhcv6JsqYnfOQx0U2riNDk4l/vkbh5os0qZEuf35VhgUylkEVk86Lr7hv8MD30POiL3nPsefEn5HxgIrgNNOmsjNjv0eQXXeefIHUGsNRNEPirDEesS33/4ZYPc/FZ62UF4tC8kI=
+  - LOG_LEVEL=debug
+  skip_cleanup: true
+  access_key_id: "$AWS_ACCESS_KEY_ID_QA"
+  secret_access_key: "$AWS_SECRET_ACCESS_KEY_QA"
+  on:
+    branch: qa
+- provider: lambda
+  function_name: ProxyRequestService-production
+  description: A small service for storing HTTP requests to play later via ProxyRequestConsumer
+  region: us-east-1
+  role: arn:aws:iam::946183545209:role/lambda-full-access
+  runtime: ruby2.5
+  module_name: app
+  handler_name: handle_event
+  environment_variables:
+  - SQS_QUEUE_URL=AQECAHh7ea2tyZ6phZgT4B9BDKwguhlFtRC6hgt+7HbmeFsrsgAAALcwgbQGCSqGSIb3DQEHBqCBpjCBowIBADCBnQYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAyXGnzTuZcRzFTjPNcCARCAcFwFMNi6Gq1FnWrI/NVZrLAVywAGEkJR3r+jhZv8iKy6xTJ8s9eBK1pOc7iy6S64twdhIBRk8qttmkSUqRZfv87iySrOLARNG/V4gjMFM5x+/e7YsROHCzBPPyqT61/oiNoClgauPyeL7WUz4Ezes8U=
+  skip_cleanup: true
+  access_key_id: "$AWS_ACCESS_KEY_ID_PRODUCTION"
+  secret_access_key: "$AWS_SECRET_ACCESS_KEY_PRODUCTION"
+  on:
+    branch: master
+notifications:
+  email:
+    on_failure: always
+env:
+  global:
+  - AWS_DEFAULT_REGION=us-east-1
+  - secure: ePe5ve81ISa36GOLSeftExE2jD0g6iSGYo6+8/lvyPUM0giMAfrpduKeizaSV7gzy4IVCoKTpFZ47O481r+a/X+nOPBYYpHMzdrHjDTMaiyr0ic6qYltFcY1Bu0JDDi8FzVbw1Nb7v00ZWV+ot18mKMEFxHA9UQFbCaiKxsIGguVHQ6hY9aZh0t1ne3/G0zGLkyERve9I626HS1oQSgMqBZkDLGfTiNq6Oh/WctDe/PKr2+HtwjQyAamhftiFnTSJUeWWIiFiH38qmeRDFnnrgTDo+wYhsGvlQWHw7Ms4oeZsTD1wq5wg/rmpGk8/fYBqEZhcYLa9YStvjGX4uaFR/2FWnEBea/+AEWgQdapbaSnXdTcZ+pYgDLuWdXJ/8fsoT4Pcu2QC+R+SHPd3XUWGLrCJVd5UENPUfig8hGfmLmzwaVJoyhAFWLeV7IIWRzJCqhBxbCsetjrwARPJkyl4p0T8jaeTbLyppBBaJM0DWIDOI3L77PCPaF0l50QLKyA6Nf3gan9tXkXeuDiLsASWZM8QU3h/8/pPrPtDAWIqUTaoPILFrTAu5ZpTWwWne4pDM+G0+9x3lyZge83mNdokyePv70ugQHRbE3vusESoV+0+Z7h6WSNFwFDA7wxOuBF7XOhC78Dlfrk//bVXAMB2KmUw+wFPkzROxe1GNsEwUY=
+  - secure: IBdANoS2TwagCupcdJPXpY9OBd3n7G6pLfMoZVlAZqExflROwo9UeDBaPLdO3Gbqc4eqNImMV9eioPSTVN+FuEwVP5qAMI8d4e2YtkAnBB/zhLkP2eh3VD4OZBg7911O3sX2iJ+HXHwBGPcGAmxV0NZMJ3Lzb9jmF79W64QTRGLwaM8EtO6wtIUpVMSZtXQVLzGeU3/iDvPyYAQ9LB0LQs3vTzzaGPNvpqXtf0+/3Uibcp6Q8WE80w4lIFdLMoBfi0uBw0wSbFt5VK+5uovoy8/5ViaOFF7tBd5g5Fc33lNP3M2o+/DWFrJdowPxh6DlNP+CPuxaLRHD2GcauG424pc0MiiOfn6lprO1eYtyNdNrASzPYC/GYRy1R6Xet3Cf5wUbQZFuq0HcJ87REHk8nebeKUjrDO59CJFujwvBQvMT4OFYehzzCahVVIB68377fDAHLH2eUOVIHTJiWOnfqgzoxqWBORKg+4+GMmQYih/4KIoT68epnRAXXrh+/88cQ1aYNymuepp9ev/3SgYnfGiahfauWxUtrSrm4EQD58A1LjYYTsrXqDVsKFqa01V8/jbnfajU0cquS01aGlQ4bdR/Pz5TYFRU/oVtPxPbBGK8yQh2vulNCtB0kLgZyHLHMZaY4bdThkk0GX5Ret12PZu/EwWs9/e2XBVcff6Mwf0=
+  - secure: hWsCF0VgzaglF3ttvnjw0MHfK7ES0SIghk+oz+OBFMvy4ryj/MsOJ3j8Si47xtykyTfmy4VjpswU3oFS3sM/KjMPYi7bA+2l0zE3KELAnAsOUwKD5eGFdMwe0pmEUmIzFz7ueZu2fRDB1GD5q6PWI41GKn02k4PzJ2XKZTqNqUSdtOaSCeIDULUylNpG2UW17KxkrEwThwPW/TmmZ7UaZNn3sWRWCjKmHwJ/C85YHpUfk9BkJTlsqvhyV2hwV9jV3Gv9tR3pEby8ircMzjU6DFUtvaB5wM0TatrpQ5E4ziYf39Mgxg/LQKBok3rQLwpHIUv8zUj390ehwAvIqhT7g7BifyJsjsP1VORq0+X+y3MIa5wVTWsB2ZX0MH3iT5mZWgvvTeJGLbK9nlhzeY1bdz+NZHcG/O77Dtpx3Y0krBdXog7otyt/SbKiUZ4l6BWR6sDlGps0WbOgTbuYb0DjTfPrL46qC8IG4BBz85w3KefC5yNH+fLosHPfSLyBsWjyZd1Ic6Oots39J51y62LR5KyjqBNL427TvKkxc1rlTr+5o/4ReuD1ck9Cyhq7dYK8jVHLYbiAy5ofombRUDE/ep+amXRhEDikYs57YJUomn9JsfeGC2tIdA4vVzQgixMXwVjdi2qQASWytYC1Lr+M1S5+HE2R1KfY9YZk2CFzR/o=
