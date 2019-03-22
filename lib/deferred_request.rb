@@ -16,7 +16,7 @@ class DeferredRequest
 
   def self.for_event (event)
     # Strip 'Authorization' header if given
-    cleaned_headers = self.strip_key_from_json event['headers'], 'Authorization'
+    cleaned_headers = self.strip_key_from_hash event['headers'], :'Authorization'
     
     request = {
       httpMethod: event['httpMethod'],
@@ -30,16 +30,9 @@ class DeferredRequest
     self.new(request)
   end
 
-  # Given a (string) json value, returns a (string) json with the named key-
-  # value removed
-  def self.strip_key_from_json (json, key)
-    cleaned = {}
-    if json
-      cleaned = JSON.parse(json).inject({}) do |h, (k, v)|
-        h[k] = v unless k == key
-        h
-      end
-    end
-    cleaned.to_json
+  # Given a hash, returns a copy of hash with specified key removed
+  def self.strip_key_from_hash (h, key)
+    h.delete key if h
+    h
   end
 end

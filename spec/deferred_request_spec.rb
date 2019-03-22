@@ -1,4 +1,4 @@
-require_relative './spec_helper'
+require_relative 'spec_helper'
 
 describe DeferredRequest do
   describe '#for_event' do
@@ -8,7 +8,7 @@ describe DeferredRequest do
         "path" => "/api/v0.1/some-endpoint",
         "body" => "{ \"foo\": \"bar\" }",
         "queryStringParameters" => "{ \"foo2\": \"bar2\" }",
-        "headers" => "{ \"Content-Type\": \"application/nes-rom\" }"
+        "headers" => { "Content-Type": "application/nes-rom" }
       }
       record = DeferredRequest.for_event event
 
@@ -24,9 +24,8 @@ describe DeferredRequest do
       queryString = JSON.parse(record.request[:queryStringParameters])
       expect(queryString["foo2"]).to eq('bar2')
 
-      expect(record.request[:headers]).to be_a(String)
-      headers = JSON.parse(record.request[:headers])
-      expect(headers["Content-Type"]).to eq('application/nes-rom')
+      expect(record.request[:headers]).to be_a(Hash)
+      expect(record.request[:headers][:"Content-Type"]).to eq('application/nes-rom')
 
       expect(record.request[:isBase64Encoded]).to eq(nil)
     end
@@ -35,16 +34,15 @@ describe DeferredRequest do
       event = {
         "httpMethod" => "POST",
         "path" => "/api/v0.1/some-endpoint",
-        "headers" => "{ \"Content-Type\": \"application/nes-rom\", \"Authorization\": \"Bearer abc\" }"
+        "headers" => { "Content-Type": "application/nes-rom", "Authorization": "Bearer abc" }
       }
       record = DeferredRequest.for_event event
 
       expect(record.request).to be_a(Hash)
 
-      expect(record.request[:headers]).to be_a(String)
-      headers = JSON.parse(record.request[:headers])
-      expect(headers["Content-Type"]).to eq('application/nes-rom')
-      expect(headers["Authorization"]).to be_nil
+      expect(record.request[:headers]).to be_a(Hash)
+      expect(record.request[:headers][:"Content-Type"]).to eq('application/nes-rom')
+      expect(record.request[:headers][:"Authorization"]).to be_nil
     end
   end
 end
