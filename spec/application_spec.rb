@@ -41,7 +41,10 @@ describe Application do
         "httpMethod" => "POST",
         "path" => "/api/v0.1/some-endpoint",
         "body" => "{ \"foo\": \"bar\" }",
-        "queryStringParameters" => "{ \"foo2\": \"bar2\" }"
+        "queryStringParameters" => "{ \"foo2\": \"bar2\" }",
+        "requestContext": {
+          "requestId": "c6af9ac6-7b61-11e6-9a41-93e8deadbeef"
+        }
       }
       response = handle_event(event: event, context: {})
       expect(response).to be_a(Hash)

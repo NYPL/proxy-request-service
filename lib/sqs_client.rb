@@ -3,6 +3,11 @@ require 'aws-sdk-sqs'
 require_relative 'kms_client'
 
 class SqsClient
+  # FIFO order is preserved over a message group; We thus want only one message
+  # group.
+  # https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/using-messagegroupid-property.html
+  MESSAGE_GROUP_ID = 'proxy-requests'
+
   def initialize
     init_aws_client
   end
@@ -33,8 +38,11 @@ class SqsClient
 
   def write (sqs_entry)
     begin
-      Application.logger.debug "Writing deferred request to SQS: #{sqs_entry}"
+      Application.logger.debug "Writing deferred request id #{sqs_entry.id} to SQS: #{sqs_entry}"
+
       @sqs.send_message({
+        message_group_id: MESSAGE_GROUP_ID,
+        message_deduplication_id: sqs_entry.id,
         queue_url: @sqs_queue_url,
         message_body: JSON.generate(sqs_entry.request)
       })
