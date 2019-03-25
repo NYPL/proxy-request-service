@@ -13,7 +13,7 @@ deploy:
   region: us-east-1
   role: arn:aws:iam::224280085904:role/lambda_basic_execution
   runtime: ruby2.5
-  module_name: app
+  module_name: application
   handler_name: handle_event
   environment_variables:
   - SQS_QUEUE_URL=na
@@ -29,10 +29,10 @@ deploy:
   region: us-east-1
   role: arn:aws:iam::946183545209:role/lambda-full-access
   runtime: ruby2.5
-  module_name: app
+  module_name: application
   handler_name: handle_event
   environment_variables:
-  - SQS_QUEUE_URL=AQECAHh7ea2tyZ6phZgT4B9BDKwguhlFtRC6hgt+7HbmeFsrsgAAAK8wgawGCSqGSIb3DQEHBqCBnjCBmwIBADCBlQYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAwyOn/yycE8N9lv608CARCAaN/yHfET8WshOVrAOw+1j/mzgtxVUNJjzGRKHk+MI1c+MwAyVjrri/q9mMXk985hj6QsCT8jxzZYj3wlFesh0g1sTX1J6xVLGPTrFHQLAUHttlcZjero9Ga4s+6E1dt50v4rgaDjC0mD
+  - SQS_QUEUE_URL=AQECAHh7ea2tyZ6phZgT4B9BDKwguhlFtRC6hgt+7HbmeFsrsgAAAKowgacGCSqGSIb3DQEHBqCBmTCBlgIBADCBkAYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAyf5SLN3bvMXtB5EjUCARCAYwQA44aMtSMj/VLHQB4/lPny0WMivTWtwN5tusjrNAJjlCAI/PW9F98y3HrAdH4lJI7KEMfe43Ex1u57Jx5YI/bBFQKlTyGat7mnyFOIRUOVGH7TqtOeXQ1M6FTMlAbWP67/bQ==
   - LOG_LEVEL=debug
   skip_cleanup: true
   access_key_id: "$AWS_ACCESS_KEY_ID_QA"
@@ -45,7 +45,7 @@ deploy:
   region: us-east-1
   role: arn:aws:iam::946183545209:role/lambda-full-access
   runtime: ruby2.5
-  module_name: app
+  module_name: application
   handler_name: handle_event
   environment_variables:
   - SQS_QUEUE_URL=

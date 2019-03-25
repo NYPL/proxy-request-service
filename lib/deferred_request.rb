@@ -7,6 +7,14 @@ class DeferredRequest
     @request = request
   end
 
+  def id
+    # If we got a requestId, use that as it's presumed globally unique
+    # TODO This is used to identify distinct requests to preserve ordering in
+    # the FIFO queue. Is there a situation where requestContext.requestId would
+    # *not* be set, leading to a nil id, leading to chaos?
+    @request[:requestId]
+  end
+
   def to_s
     request_uri = @request[:path]
     query_string = URI.encode_www_form(@request[:queryStringParameters]) if @request[:queryStringParameters]
@@ -24,7 +32,8 @@ class DeferredRequest
       body: event['body'],
       isBase64Encoded: event['isBase64Encoded'],
       headers: cleaned_headers,
-      queryStringParameters: event['queryStringParameters']
+      queryStringParameters: event['queryStringParameters'],
+      requestId: event['requestContext'].nil? ? nil : event['requestContext']['requestId']
     }
 
     self.new(request)

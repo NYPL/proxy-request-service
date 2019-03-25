@@ -51,12 +51,12 @@ To create a local queue avail at http://localhost:4576/queue/proxy-request-servi
 aws sqs create-queue --region us-east-1 --queue-name proxy-request-service --endpoint http://localhost:4576 --profile local
 ```
 
-A sample `sam.local.yml` includes an `SQS_QUEUE_URL` parameter encrypted using the `nypl-digital-dev` account, which decrypts to "http://host.docker.internal:4576/queue/sierra-updates-for-scsb-local".
+A sample `sam.local.yml` includes an `SQS_QUEUE_URL` parameter encrypted using the `nypl-digital-dev` account, which decrypts to "http://host.docker.internal:4576/queue/proxy-request-service".
 
 When populating an SQS queue, the `aws sqs` cli tool may be useful for inspecting the messages written. For example, when populating a localstack SQS, run the following to pop the last 10 messages:
 
 ```
-aws sqs receive-message --region us-east-1 --queue-url http://localhost:4576/queue/proxy-request-service --endpoint http://localhost:4576 --profile local --attribut-names All --message-attribute-names All --max-number-of-messages 10
+aws sqs receive-message --region us-east-1 --queue-url http://localhost:4576/queue/proxy-request-service --endpoint http://localhost:4576 --profile local --attribute-names All --message-attribute-names All --max-number-of-messages 10
 ```
 
 Update `event.json` as follows:
@@ -104,5 +104,5 @@ sam package --region us-east-1 --template-file sam.qa.yml --output-template-file
 To deploy to QA:
 
 ```
-aws cloudformation deploy --template-file packaged-template.yaml --stack-name sync-item-metadata-to-scsb-service-qa --profile nypl-digital-dev --region us-east-1 --capabilities CAPABILITY_IAM
+aws cloudformation deploy --template-file packaged-template.yaml --stack-name proxy-request-service-qa --profile nypl-digital-dev --region us-east-1 --capabilities CAPABILITY_IAM
 ```

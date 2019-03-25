@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: 'sync-item-metadata-to-scsb-service'
+Description: 'proxy-request-service'
 
 Resources:
   SyncItemMetadataToScsbService:
@@ -11,7 +11,7 @@ Resources:
       Timeout: 10
       Environment:
         Variables:
-          SQS_QUEUE_URL: AQECAHh7ea2tyZ6phZgT4B9BDKwguhlFtRC6hgt+7HbmeFsrsgAAAKAwgZ0GCSqGSIb3DQEHBqCBjzCBjAIBADCBhgYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAx4Smuvj3Pw06GTxwgCARCAWcL6l/NurZO6MHOc/GI+wZUDS6q9U+1/I/DbeaP/8U6OqIPN1fM5XaHKadueUqCu0kWIFwUERxSvsd2QemiMWQDjm1mqo86lnUQRfwY0G4S9hiBufPgHXQs9
+          SQS_QUEUE_URL: AQECAHh7ea2tyZ6phZgT4B9BDKwguhlFtRC6hgt+7HbmeFsrsgAAAJ8wgZwGCSqGSIb3DQEHBqCBjjCBiwIBADCBhQYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAyGzmQLgDBtSUal/G0CARCAWCPYxUwBOm/dzWVt+72KuNd38rXxzccgc8SJWnWNwVaOzLl1iecDiMEfu5Y6qilQ/0auMpVMf0DJ6R4HEHi5woTQB8l8npfqEVATzZ6aP/YhSP5kPpdW0Qk=
           LOG_LEVEL: debug
       Events:
         Api1:
