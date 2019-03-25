@@ -36,16 +36,28 @@ class SqsClient
     { queue_url: queue_url, queue_name: queue_name, endpoint: endpoint }
   end
 
+  # Is the queue we're writing to a "FIFO" queue type?
+  def is_fifo_queue?
+    # AWS SQA requires FIFO queues to end in ".fifo"
+    ! @sqs_queue_url.match(/\.fifo/).nil?
+  end
+
   def write (sqs_entry)
     begin
       Application.logger.debug "Writing deferred request id #{sqs_entry.id} to SQS: #{sqs_entry}"
 
-      @sqs.send_message({
-        message_group_id: MESSAGE_GROUP_ID,
-        message_deduplication_id: sqs_entry.id,
+      message = {
         queue_url: @sqs_queue_url,
         message_body: JSON.generate(sqs_entry.request)
-      })
+      }
+
+      # Include deduplication params if writing to a FIFO queue:
+      if is_fifo_queue?
+        message[:message_group_id] = MESSAGE_GROUP_ID
+        message[:message_deduplication_id] = sqs_entry.id
+      end
+
+      @sqs.send_message(message)
     rescue Exception => e
       Application.logger.error "SqsClient error: #{e.message}"
       raise e

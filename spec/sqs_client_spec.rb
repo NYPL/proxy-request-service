@@ -3,18 +3,20 @@ require 'aws-sdk-sqs'
 require_relative 'spec_helper'
 
 describe SqsClient do
-  let(:sqs_client) { instance_double(Aws::SQS::Client) }
-  let(:mock_kms_client) { double('KmsClient', decrypt: 'https://example-domain:4576/queue/proxy-request-service' ) }
+  let(:mock_sqs_client) { instance_double(Aws::SQS::Client) }
 
-  before do
-    sqs_client = instance_double(Aws::SQS::Client)
-    allow(Aws::SQS::Client).to receive(:new).and_return(sqs_client)
-    allow(sqs_client).to receive(:send_message).and_return({ message_id: 'message-id' })
-
-    allow(KmsClient).to receive(:new).and_return(mock_kms_client)
+  before(:each) do
+    allow(Aws::SQS::Client).to receive(:new).and_return(mock_sqs_client)
+    allow(mock_sqs_client).to receive(:send_message).and_return({ message_id: 'message-id' })
   end
 
   describe '#parse_sqs_url' do
+    let(:mock_kms_client) { double('KmsClient', decrypt: 'https://example-domain:4576/queue/proxy-request-service' ) }
+
+    before do
+      allow(KmsClient).to receive(:new).and_return(mock_kms_client)
+    end
+
     it 'parses sqs url correctly' do
       config = SqsClient.new.parse_sqs_url 'https://example-domain:4576/queue/proxy-request-service'
       expect(config[:queue_name]).to eq('proxy-request-service')
@@ -24,13 +26,56 @@ describe SqsClient do
   end
 
   describe '#write' do
-    it 'writes record to sqs' do
-      ENV['SQS_QUEUE_URL'] = 'http://localhost:4576/queue/proxy-request-service'
+    describe 'standard queue type' do
+      let(:mock_kms_client) { double('KmsClient', decrypt: 'https://example-domain:4576/queue/proxy-request-service' ) }
 
-      response = SqsClient.new.write(DeferredRequest.new(url: 'http://example.com'))
+      before do
+        allow(KmsClient).to receive(:new).and_return(mock_kms_client)
+      end
 
-      expect(response).to be_a(Hash)
-      expect(response[:message_id]).to eq('message-id')
+      it 'writes record to standard sqs' do
+        ENV['SQS_QUEUE_URL'] = 'encrypted stuff, which mock_kms_client will "decrypt"'
+
+        # Before handling anything, establish the kind of message we expect to be
+        # sent to the Aws::SQS::Client#send_message
+        # Note we have to do this *before* it is invoked
+        expect(mock_sqs_client).to receive(:send_message).with(equivalent_sqs_entry_to({
+          queue_url: 'https://example-domain:4576/queue/proxy-request-service',
+          message_body: "{\"url\":\"http://example.com\"}"
+        }))
+
+        response = SqsClient.new.write(DeferredRequest.new(url: 'http://example.com'))
+
+        expect(response).to be_a(Hash)
+        expect(response[:message_id]).to eq('message-id')
+      end
+    end
+
+    describe 'FIFO queue type' do
+      let(:mock_kms_client) { double('KmsClient', decrypt: 'https://example-domain:4576/queue/proxy-request-service.fifo' ) }
+
+      before do
+        allow(KmsClient).to receive(:new).and_return(mock_kms_client)
+      end
+
+      it 'writes record with dedupe params to FIFO sqs' do
+        ENV['SQS_QUEUE_URL'] = 'encrypted stuff, which mock_kms_client will "decrypt"'
+
+        # Before handling anything, establish the kind of message we expect to be
+        # sent to the Aws::SQS::Client#send_message
+        # Note we have to do this *before* it is invoked
+        expect(mock_sqs_client).to receive(:send_message).with(equivalent_sqs_entry_to({
+          message_group_id: 'proxy-requests',
+          message_deduplication_id: 'message-id',
+          queue_url: 'https://example-domain:4576/queue/proxy-request-service.fifo',
+          message_body: "{\"url\":\"http://example.com\",\"requestId\":\"message-id\"}"
+        }))
+
+        response = SqsClient.new.write(DeferredRequest.new(url: 'http://example.com', requestId: 'message-id'))
+
+        expect(response).to be_a(Hash)
+        expect(response[:message_id]).to eq('message-id')
+      end
     end
   end
 end
