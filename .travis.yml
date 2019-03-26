@@ -48,7 +48,7 @@ deploy:
   module_name: application
   handler_name: handle_event
   environment_variables:
-  - SQS_QUEUE_URL=
+  - SQS_QUEUE_URL=AQECAHh7ea2tyZ6phZgT4B9BDKwguhlFtRC6hgt+7HbmeFsrsgAAALIwga8GCSqGSIb3DQEHBqCBoTCBngIBADCBmAYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAwPf1qGVd1miM4bOtcCARCAa2yrcOI+k2hX8YEgIw6DABzI04ovMdrwbliOBIT6CKHua6Vnhf8xXG9PrVuVOGYKbzVOKiq2kfdgOQ1S+tGed9Nj/+iJfhAVTzS1YdFZojT4ZJrDbxs8vrkjeb2I/p77gXX99zGeCuRGrySn
   skip_cleanup: true
   access_key_id: "$AWS_ACCESS_KEY_ID_PRODUCTION"
   secret_access_key: "$AWS_SECRET_ACCESS_KEY_PRODUCTION"
