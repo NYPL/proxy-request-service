@@ -21,7 +21,12 @@ class DeferredRequestHandler
         raise RequestError.new "Invalid request path; Only paths that begin /api/v0.1/ supported"
       end
 
+      Application.logger.info("Creating deferred request for #{event['httpMethod']} #{event['path']}: #{event['body']}")
+
       request = DeferredRequest.for_event event
+
+      Application.logger.info("Writing deferred request #{request}")
+
       result = sqs_client.write request
       
       respond 200, { success: true, result: result.to_h }
@@ -31,7 +36,7 @@ class DeferredRequestHandler
 
     rescue => e
       Application.logger.error("Error: #{e}")
-      respond 500, message: e.message
+      respond 500, error_class: e.class, message: e.message
     end
   end
 

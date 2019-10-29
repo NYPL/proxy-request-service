@@ -8,6 +8,7 @@ describe Application do
 
   before do
     allow(SqsClient).to receive(:new).and_return(mock_sqs_client)
+    allow(JobClient).to receive(:generate_job_id).and_return('1234')
   end
 
   describe '#handle_event' do
@@ -41,7 +42,7 @@ describe Application do
         "httpMethod" => "POST",
         "path" => "/api/v0.1/some-endpoint",
         "body" => "{ \"foo\": \"bar\" }",
-        "queryStringParameters" => "{ \"foo2\": \"bar2\" }",
+        "queryStringParameters" => { "foo2": "bar2" },
         "requestContext": {
           "requestId": "c6af9ac6-7b61-11e6-9a41-93e8deadbeef"
         }

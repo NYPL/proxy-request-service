@@ -1,5 +1,7 @@
 require 'uri'
 
+require_relative './job_client'
+
 class DeferredRequest
   attr_accessor :request
 
@@ -22,6 +24,7 @@ class DeferredRequest
     "#{@request[:httpMethod]} #{request_uri} (body: #{@request[:body]})"
   end
 
+  # Generate a DeferredRequest instance for the given event
   def self.for_event (event)
     # Strip 'Authorization' header if given
     cleaned_headers = self.strip_key_from_hash event['headers'], :'Authorization'
@@ -36,7 +39,52 @@ class DeferredRequest
       requestId: event['requestContext'].nil? ? nil : event['requestContext']['requestId']
     }
 
+    # Determine whether or not to generate a jobId
+    create_job = self.should_create_job? request
+    if create_job
+      request[:body] = add_body_param :jobId, JobClient::generate_job_id, request
+
+      Application.logger.debug("Added jobid to DeferredRequest: #{request[:body]}")
+    end
+
+    # Remove the special override param:
+    self.strip_key_from_hash request[:queryStringParameters], 'proxyServiceCreateJob'
+
     self.new(request)
+  end
+
+  # Returns true if we should generate a job id for the given request
+  def self.should_create_job? (request)
+    # By default, we should generate a jobId
+    # Skip generating a jobId only if query param `proxyServiceCreateJob` != 'true'
+    if request[:queryStringParameters] && request[:queryStringParameters]['proxyServiceCreateJob']
+      request[:queryStringParameters]['proxyServiceCreateJob'] == 'true'
+    else
+      true
+    end
+  end
+
+  # Add given key-value to given request's :body.
+  # Assumes body is stringified (possibly base64 encoded) json
+  def self.add_body_param (key, value, request)
+    body = request[:body]
+    body = Base64.decode64 body if request[:isBase64Encoded]
+
+    if body
+      begin
+        body = JSON.parse body
+      rescue StandardError => e
+        raise "Failed to parse JSON from #{request[:isBase64Encoded] ? '' : 'non-'}base64-encoded request body: #{request[:body]}"
+      end
+    else
+      body = {}
+    end
+
+    body[key] = value
+
+    body = body.to_json
+    body = Base64.encode64 body if request[:isBase64Encoded]
+    body
   end
 
   # Given a hash, returns a copy of hash with specified key removed

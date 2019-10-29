@@ -3,3 +3,6 @@ class RequestError < StandardError
     super
   end
 end
+
+class JobServiceError < StandardError
+end

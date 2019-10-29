@@ -6,6 +6,7 @@ class KmsClient
     @kms = Aws::KMS::Client.new(region: 'us-east-1')
   end 
 
+  # Decrypt given encrypted string
   def decrypt(cipher)
     # Assume value is base64 encoded:
     decoded = Base64.decode64 cipher
