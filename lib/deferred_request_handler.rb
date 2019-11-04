@@ -29,7 +29,7 @@ class DeferredRequestHandler
 
       result = sqs_client.write request
       
-      respond 200, { success: true, result: result.to_h }
+      respond 200, { success: true, jobId: request.job_id, sqsResult: result }
 
     rescue RequestError => e
       respond 400, message: "RequestError: #{e.message}"

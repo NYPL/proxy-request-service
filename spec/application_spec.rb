@@ -56,8 +56,9 @@ describe Application do
 
       body = JSON.parse(response[:body])
       expect(body['success']).to eq(true)
-      expect(body['result']).to be_a(Hash)
-      expect(body['result']['message_id']).to be_a(String)
+      expect(body['sqsResult']).to be_a(Hash)
+      expect(body['sqsResult']['message_id']).to be_a(String)
+      expect(body['jobId']).to eq('1234')
     end
   end
 end
