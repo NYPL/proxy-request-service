@@ -1,6 +1,25 @@
 require_relative 'spec_helper'
 
 describe DeferredRequest do
+  before(:each) do
+    allow(JobClient).to receive(:generate_job_id).and_return('1234')
+  end
+
+  describe '#should_create_job?' do
+    it 'defaults to creating job' do
+      expect(DeferredRequest.should_create_job?({ })).to eq(true)
+      expect(DeferredRequest.should_create_job?({ :queryStringParameters => nil })).to eq(true)
+      expect(DeferredRequest.should_create_job?({ :queryStringParameters => { } })).to eq(true)
+      expect(DeferredRequest.should_create_job?({ :queryStringParameters => { 'foo' => 'bar' } })).to eq(true)
+      expect(DeferredRequest.should_create_job?({ :queryStringParameters => { 'proxyServiceCreateJob' => 'true' } })).to eq(true)
+    end
+
+    it 'skip job creation if proxyServiceCreateJob is set to anything but true' do
+      expect(DeferredRequest.should_create_job?({ :queryStringParameters => { 'proxyServiceCreateJob' => '1' } })).to eq(false)
+      expect(DeferredRequest.should_create_job?({ :queryStringParameters => { 'proxyServiceCreateJob' => 'false' } })).to eq(false)
+    end
+  end
+
   describe '#for_event' do
     it 'builds sqs record with only the essential request data' do
       event = {
@@ -19,6 +38,7 @@ describe DeferredRequest do
       expect(record.request[:body]).to be_a(String)
       body = JSON.parse(record.request[:body])
       expect(body["foo"]).to eq('bar')
+      expect(body["jobId"]).to eq('1234')
 
       expect(record.request[:queryStringParameters]).to be_a(String)
       queryString = JSON.parse(record.request[:queryStringParameters])

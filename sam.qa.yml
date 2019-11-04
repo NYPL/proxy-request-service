@@ -3,7 +3,7 @@ Transform: AWS::Serverless-2016-10-31
 Description: 'proxy-request-service'
 
 Resources:
-  SyncItemMetadataToScsbService:
+  ProxyRequestService:
     Type: AWS::Serverless::Function
     Properties:
       Handler: application.handle_event
@@ -13,3 +13,7 @@ Resources:
         Variables:
           SQS_QUEUE_URL: AQECAHh7ea2tyZ6phZgT4B9BDKwguhlFtRC6hgt+7HbmeFsrsgAAAKowgacGCSqGSIb3DQEHBqCBmTCBlgIBADCBkAYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAyf5SLN3bvMXtB5EjUCARCAYwQA44aMtSMj/VLHQB4/lPny0WMivTWtwN5tusjrNAJjlCAI/PW9F98y3HrAdH4lJI7KEMfe43Ex1u57Jx5YI/bBFQKlTyGat7mnyFOIRUOVGH7TqtOeXQ1M6FTMlAbWP67/bQ==
           LOG_LEVEL: debug
+          NYPL_OAUTH_URL: https://isso.nypl.org/
+          NYPL_OAUTH_ID: AQECAHh7ea2tyZ6phZgT4B9BDKwguhlFtRC6hgt+7HbmeFsrsgAAAGowaAYJKoZIhvcNAQcGoFswWQIBADBUBgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDJgrQmkr7pQa4WSF1gIBEIAnLgWjuqFllMpCQWGT/eC/7n/pxFN87zaoJF19zCRHH/ulh4BICTZf
+          NYPL_OAUTH_SECRET: AQECAHh7ea2tyZ6phZgT4B9BDKwguhlFtRC6hgt+7HbmeFsrsgAAAIcwgYQGCSqGSIb3DQEHBqB3MHUCAQAwcAYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAx8ZuLftGsgDmOxxBICARCAQ3ZSNw6hWlqI73kLJcs8Zg3O13PKiATfXXDUvGFim/KolFmQDCsVp7JFF9Jg01U++KNtcGJiVev7z3OAPNXc3fqGp6k=
+          PLATFORM_API_BASE_URL: https://qa-platform.nypl.org/api/v0.1/

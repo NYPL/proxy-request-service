@@ -23,6 +23,10 @@ class SqsClient
     )   
   end
 
+  # Parses given SQS URL, returning a Hash with:
+  #   queue_url: The original URL
+  #   queue_name: The name part of the URL (e.g. "proxy-request-queue-qa"
+  #   endpoint: The protocol & fqdn of the URL
   def parse_sqs_url (queue_url)
     # Strip rogue whitespace from encrypted value:
     queue_url.strip!
@@ -42,6 +46,7 @@ class SqsClient
     ! @sqs_queue_url.match(/\.fifo/).nil?
   end
 
+  # Write `entry` to SQS
   def write (sqs_entry)
     begin
       Application.logger.debug "Writing deferred request id #{sqs_entry.id} to SQS: #{sqs_entry}"

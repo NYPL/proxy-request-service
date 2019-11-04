@@ -3,7 +3,7 @@ Transform: AWS::Serverless-2016-10-31
 Description: 'proxy-request-service'
 
 Resources:
-  SyncItemMetadataToScsbService:
+  ProxyRequestService:
     Type: AWS::Serverless::Function
     Properties:
       Handler: application.handle_event
