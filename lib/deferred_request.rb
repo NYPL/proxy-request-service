@@ -3,10 +3,11 @@ require 'uri'
 require_relative './job_client'
 
 class DeferredRequest
-  attr_accessor :request
+  attr_accessor :request, :job_id
 
-  def initialize (request)
+  def initialize (request, job_id = nil)
     @request = request
+    @job_id = job_id
   end
 
   def id
@@ -39,10 +40,11 @@ class DeferredRequest
       requestId: event['requestContext'].nil? ? nil : event['requestContext']['requestId']
     }
 
+    job_id = nil
     # Determine whether or not to generate a jobId
-    create_job = self.should_create_job? request
-    if create_job
-      request[:body] = add_body_param :jobId, JobClient::generate_job_id, request
+    if self.should_create_job? request
+      job_id = JobClient::generate_job_id
+      request[:body] = add_body_param :jobId, job_id, request
 
       Application.logger.debug("Added jobid to DeferredRequest: #{request[:body]}")
     end
@@ -50,7 +52,7 @@ class DeferredRequest
     # Remove the special override param:
     self.strip_key_from_hash request[:queryStringParameters], 'proxyServiceCreateJob'
 
-    self.new(request)
+    self.new(request, job_id)
   end
 
   # Returns true if we should generate a job id for the given request
