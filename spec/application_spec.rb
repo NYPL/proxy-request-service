@@ -37,11 +37,11 @@ describe Application do
       expect(JSON.parse(response[:body])['message']).to eq("RequestError: Invalid request path; Only paths that begin /api/v0.1/ supported")
     end
 
-    it 'accepts and writes a valid event' do
+    it 'accepts and writes a valid event', current: true do
       event = {
         "httpMethod" => "POST",
         "path" => "/api/v0.1/some-endpoint",
-        "body" => "{ \"foo\": \"bar\" }",
+        "body" => "{ \"foo\": \"bar\", \"itemBarcode\": \"item-barcode\" }",
         "queryStringParameters" => { "foo2": "bar2" },
         "requestContext": {
           "requestId": "c6af9ac6-7b61-11e6-9a41-93e8deadbeef"
@@ -59,6 +59,7 @@ describe Application do
       expect(body['sqsResult']).to be_a(Hash)
       expect(body['sqsResult']['message_id']).to be_a(String)
       expect(body['jobId']).to eq('1234')
+      expect(body['itemBarcode']).to eq('item-barcode')
     end
   end
 end
