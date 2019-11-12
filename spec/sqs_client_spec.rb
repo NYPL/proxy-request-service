@@ -26,6 +26,14 @@ describe SqsClient do
   end
 
   describe '#write' do
+
+    let(:mock_job_client) { instance_double(JobClient) }
+
+    before(:each) do
+      allow(mock_job_client).to receive(:create_job).and_return('jobby-mc-job-job')
+      allow(JobClient).to receive(:new).and_return(mock_job_client)
+    end
+
     describe 'standard queue type' do
       let(:mock_kms_client) { double('KmsClient', decrypt: 'https://example-domain:4576/queue/proxy-request-service' ) }
 
@@ -41,7 +49,10 @@ describe SqsClient do
         # Note we have to do this *before* it is invoked
         expect(mock_sqs_client).to receive(:send_message).with(equivalent_sqs_entry_to({
           queue_url: 'https://example-domain:4576/queue/proxy-request-service',
-          message_body: "{\"url\":\"http://example.com\"}"
+          message_body: {
+            url: 'http://example.com',
+            body: { jobId: 'jobby-mc-job-job' }.to_json
+          }.to_json
         }))
 
         response = SqsClient.new.write(DeferredRequest.new(url: 'http://example.com'))
@@ -68,7 +79,11 @@ describe SqsClient do
           message_group_id: 'proxy-requests',
           message_deduplication_id: 'message-id',
           queue_url: 'https://example-domain:4576/queue/proxy-request-service.fifo',
-          message_body: "{\"url\":\"http://example.com\",\"requestId\":\"message-id\"}"
+          message_body: {
+            url: 'http://example.com',
+            requestId: 'message-id',
+            body: { jobId: 'jobby-mc-job-job' }.to_json
+          }.to_json
         }))
 
         response = SqsClient.new.write(DeferredRequest.new(url: 'http://example.com', requestId: 'message-id'))
