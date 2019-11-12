@@ -53,7 +53,7 @@ class SqsClient
 
       message = {
         queue_url: @sqs_queue_url,
-        message_body: JSON.generate(sqs_entry.request)
+        message_body: JSON.generate(sqs_entry.serialize)
       }
 
       # Include deduplication params if writing to a FIFO queue:

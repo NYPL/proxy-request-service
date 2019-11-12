@@ -29,13 +29,13 @@ class DeferredRequestHandler
 
       result = sqs_client.write request
       
-      respond 200, { success: true, jobId: request.job_id, sqsResult: result }
+      respond 200, request.response.merge({ success: true, sqsResult: result })
 
     rescue RequestError => e
       respond 400, message: "RequestError: #{e.message}"
 
     rescue => e
-      Application.logger.error("Error: #{e}")
+      Application.logger.error("Error: #{e}\n#{e.backtrace.join('\n')}")
       respond 500, error_class: e.class, message: e.message
     end
   end
