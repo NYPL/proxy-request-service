@@ -58,8 +58,9 @@ describe Application do
       expect(body['success']).to eq(true)
       expect(body['sqsResult']).to be_a(Hash)
       expect(body['sqsResult']['message_id']).to be_a(String)
-      expect(body['jobId']).to eq('1234')
-      expect(body['itemBarcode']).to eq('item-barcode')
+      expect(body['data']).to be_a(Hash)
+      expect(body['data']['jobId']).to eq('1234')
+      expect(body['data']['itemBarcode']).to eq('item-barcode')
     end
   end
 end

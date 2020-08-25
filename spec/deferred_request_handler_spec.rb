@@ -62,8 +62,9 @@ describe DeferredRequestHandler do
       expect(body['success']).to eq(true)
       expect(body['sqsResult']).to be_a(Hash)
       expect(body['sqsResult']['message_id']).to be_a(String)
-      expect(body['jobId']).to be_a(String)
-      expect(body['jobId']).to eq('jobby-jobby-id')
+      expect(body['data']).to be_a(Hash)
+      expect(body['data']['jobId']).to be_a(String)
+      expect(body['data']['jobId']).to eq('jobby-jobby-id')
     end
 
     it 'should write record to sqs without jobid if proxyServiceCreateJob=false' do

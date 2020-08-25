@@ -42,6 +42,6 @@ class DeferredRequestHandler
 
   def respond(statusCode = 200, body = nil)
     Application.logger.debug("Responding with #{statusCode}", body)
-    { statusCode: statusCode, body: body.to_json, headers: { "Content-Type": "application/json" } }
+    { statusCode: statusCode, body: { statusCode: statusCode }.merge(body).to_json, headers: { "Content-Type": "application/json" } }
   end
 end
