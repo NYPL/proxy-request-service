@@ -83,7 +83,7 @@ class DeferredRequest
   def compute_job_id
     job_id = JobClient::generate_job_id
     request_body[:jobId] = job_id
-    response[:jobId] = job_id
+    response[:data][:jobId] = job_id
 
     Application.logger.debug("Added jobid to DeferredRequest: #{@original_request[:body]}")
   end
@@ -92,9 +92,9 @@ class DeferredRequest
   # the request:
   def default_response
     # Establish what request params should be returned to caller:
-    [:itemBarcode].inject({}) do |h, prop|
+    [:itemBarcode].inject({ data: {} }) do |h, prop|
       val = request_body[prop.to_s]
-      h[prop] = val if val
+      h[:data][prop] = val if val
       h
     end
   end
