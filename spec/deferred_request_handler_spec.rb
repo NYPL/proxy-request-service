@@ -5,7 +5,7 @@ require_relative 'spec_helper'
 
 describe DeferredRequestHandler do
   let(:sqs_client) { instance_double(Aws::SQS::Client) }
-  let(:mock_kms_client) { double('KmsClient', decrypt: 'https://example-domain:4576/queue/proxy-request-service' ) }
+  let(:mock_kms_client) { double('KmsClient', decrypt: 'https://example-domain:4566/queue/proxy-request-service' ) }
 
   before do
     allow(Aws::SQS::Client).to receive(:new).and_return(sqs_client)
@@ -36,7 +36,7 @@ describe DeferredRequestHandler do
       # sent to the Aws::SQS::Client#send_message
       # Note we have to do this *before* it is invoked
       expect(sqs_client).to receive(:send_message).with(equivalent_sqs_entry_to({
-        queue_url: 'https://example-domain:4576/queue/proxy-request-service',
+        queue_url: 'https://example-domain:4566/queue/proxy-request-service',
         # Stringify the message_body:
         message_body: {
           "httpMethod": "POST",
@@ -84,7 +84,7 @@ describe DeferredRequestHandler do
       # sent to the Aws::SQS::Client#send_message
       # Note we have to do this *before* it is invoked
       expect(sqs_client).to receive(:send_message).with(equivalent_sqs_entry_to({
-        queue_url: 'https://example-domain:4576/queue/proxy-request-service',
+        queue_url: 'https://example-domain:4566/queue/proxy-request-service',
         # Stringify the message_body:
         message_body: {
           "httpMethod": "POST",

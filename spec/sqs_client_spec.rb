@@ -11,17 +11,17 @@ describe SqsClient do
   end
 
   describe '#parse_sqs_url' do
-    let(:mock_kms_client) { double('KmsClient', decrypt: 'https://example-domain:4576/queue/proxy-request-service' ) }
+    let(:mock_kms_client) { double('KmsClient', decrypt: 'https://example-domain:4566/queue/proxy-request-service' ) }
 
     before do
       allow(KmsClient).to receive(:new).and_return(mock_kms_client)
     end
 
     it 'parses sqs url correctly' do
-      config = SqsClient.new.parse_sqs_url 'https://example-domain:4576/queue/proxy-request-service'
+      config = SqsClient.new.parse_sqs_url 'https://example-domain:4566/queue/proxy-request-service'
       expect(config[:queue_name]).to eq('proxy-request-service')
-      expect(config[:queue_url]).to eq('https://example-domain:4576/queue/proxy-request-service')
-      expect(config[:endpoint]).to eq('https://example-domain:4576')
+      expect(config[:queue_url]).to eq('https://example-domain:4566/queue/proxy-request-service')
+      expect(config[:endpoint]).to eq('https://example-domain:4566')
     end
   end
 
@@ -35,7 +35,7 @@ describe SqsClient do
     end
 
     describe 'standard queue type' do
-      let(:mock_kms_client) { double('KmsClient', decrypt: 'https://example-domain:4576/queue/proxy-request-service' ) }
+      let(:mock_kms_client) { double('KmsClient', decrypt: 'https://example-domain:4566/queue/proxy-request-service' ) }
 
       before do
         allow(KmsClient).to receive(:new).and_return(mock_kms_client)
@@ -48,7 +48,7 @@ describe SqsClient do
         # sent to the Aws::SQS::Client#send_message
         # Note we have to do this *before* it is invoked
         expect(mock_sqs_client).to receive(:send_message).with(equivalent_sqs_entry_to({
-          queue_url: 'https://example-domain:4576/queue/proxy-request-service',
+          queue_url: 'https://example-domain:4566/queue/proxy-request-service',
           message_body: {
             url: 'http://example.com',
             body: { jobId: 'jobby-mc-job-job' }.to_json
@@ -63,7 +63,7 @@ describe SqsClient do
     end
 
     describe 'FIFO queue type' do
-      let(:mock_kms_client) { double('KmsClient', decrypt: 'https://example-domain:4576/queue/proxy-request-service.fifo' ) }
+      let(:mock_kms_client) { double('KmsClient', decrypt: 'https://example-domain:4566/queue/proxy-request-service.fifo' ) }
 
       before do
         allow(KmsClient).to receive(:new).and_return(mock_kms_client)
@@ -78,7 +78,7 @@ describe SqsClient do
         expect(mock_sqs_client).to receive(:send_message).with(equivalent_sqs_entry_to({
           message_group_id: 'proxy-requests',
           message_deduplication_id: 'message-id',
-          queue_url: 'https://example-domain:4576/queue/proxy-request-service.fifo',
+          queue_url: 'https://example-domain:4566/queue/proxy-request-service.fifo',
           message_body: {
             url: 'http://example.com',
             requestId: 'message-id',

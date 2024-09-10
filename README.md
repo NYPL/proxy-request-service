@@ -10,8 +10,8 @@ This is a small Ruby app deployed as an AWS Lambda behind API Gateway to serve a
 
 ### Installation
 
-```
-bundle install; bundle install --deployment
+```sh
+bundle install
 ```
 
 ### Setup
@@ -33,7 +33,7 @@ All config is in sam.[ENVIRONMENT].yml templates, encrypted as necessary.
 
 The following will invoke the lambda against the sample `event.json`:
 
-```
+```sh
 sam local invoke --event event.json --region us-east-1 --template sam.[ENVIRONMENT].yml --profile nypl-digital-dev
 ```
 
@@ -41,7 +41,7 @@ Note also that if you choose `sam.local.yml`, you'll need to start SQS via Local
 
 #### Localstack for offline testing
 
-A sample `sam.local.yml` includes an `SQS_QUEUE_URL`, which decrypts to "http://host.docker.internal:4576/queue/proxy-request-service".
+A sample `sam.local.yml` includes an `SQS_QUEUE_URL`, which decrypts to "http://host.docker.internal:4566/queue/proxy-request-service".
 
 Localstack may be useful for running a local SQS to fully test the application offline (i.e. without writing events into the QA/Production SQS).
 
@@ -51,7 +51,7 @@ To install localstack:
 
 `pip3 install localstack` (or use `pip` if that's what's available)
 
-The [repo](https://github.com/localstack/localstack#installing) may offer help if you get stuck.
+The [repo](https://github.com/localstack/localstack?tab=readme-ov-file#install) may offer help if you get stuck.
 
 **2. Start the service:**
 
@@ -61,7 +61,7 @@ The [repo](https://github.com/localstack/localstack#installing) may offer help i
 
 If you don't already have one, create a "local" aws profile with blank credentials:
 
-```
+```sh
 [local]
 aws_access_key_id =
 aws_secret_access_key =
@@ -70,14 +70,15 @@ aws_secret_access_key =
 That will enable you to use the `aws` cli using `--profile local`, which means you guarantee you are not authenticating against any actual AWS account.
 
 Add the queue:
-```
-aws sqs create-queue --region us-east-1 --queue-name proxy-request-service --endpoint http://localhost:4576 --profile local
+
+```sh
+aws sqs create-queue --region us-east-1 --queue-name proxy-request-service --endpoint http://localhost:4566 --profile local
 ```
 
 When populating an SQS queue, the `aws sqs` cli tool may be useful for inspecting the messages written. For example, when populating a localstack SQS, run the following to pop the last 10 messages:
 
-```
-aws sqs receive-message --region us-east-1 --queue-url http://localhost:4576/queue/proxy-request-service --endpoint http://localhost:4576 --profile local --attribute-names All --message-attribute-names All --max-number-of-messages 10
+```sh
+aws sqs receive-message --region us-east-1 --queue-url http://localhost:4566/000000000000/proxy-request-service --endpoint http://localhost:4566 --profile local --attribute-names All --message-attribute-names All --max-number-of-messages 10
 ```
 
 #### Modifying `event.json`

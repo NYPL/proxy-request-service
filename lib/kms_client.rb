@@ -3,7 +3,11 @@ require 'base64'
 
 class KmsClient
   def initialize
-    @kms = Aws::KMS::Client.new(region: 'us-east-1')
+    @kms = Aws::KMS::Client.new(
+      region: 'us-east-1',
+      access_key_id:  ENV['AWS_ACCESS_KEY_ID'],
+      secret_access_key: ENV['AWS_SECRET_ACCESS_KEY']
+    )
   end 
 
   # Decrypt given encrypted string
