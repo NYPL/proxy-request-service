@@ -7,7 +7,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
       - run:
-          bundle exex rspec
+          bundle exec rspec
 
   deploy-lambda-qa:
     runs-on: ubuntu-latest
