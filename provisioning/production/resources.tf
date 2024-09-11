@@ -5,7 +5,7 @@ provider "aws" {
 terraform {
   # Use s3 to store terraform state
   backend "s3" {
-    bucket  = "nypl-github-actions-builds-qa"
+    bucket  = "nypl-github-actions-builds-production"
     key     = "proxy-request-service-terraform-state"
     region  = "us-east-1"
   }
