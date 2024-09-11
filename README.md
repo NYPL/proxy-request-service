@@ -113,20 +113,4 @@ bundle exec rspec
 
 ## Deploy
 
-Deployments are entirely handled by Travis-ci.com. To deploy to development, qa, or production, commit code to the `development`, `qa`, and `master` branches on origin, respectively.
-
-### Manual deployments
-
-If for some reason you need to skip Travis, the following models manually deploying QA:
-
-To package for QA:
-
-```
-sam package --region us-east-1 --template-file sam.qa.yml --output-template-file packaged-template.yaml --profile nypl-digital-dev --s3-bucket nypl-travis-builds-qa
-```
-
-To deploy to QA:
-
-```
-aws cloudformation deploy --template-file packaged-template.yaml --stack-name proxy-request-service-qa --profile nypl-digital-dev --region us-east-1 --capabilities CAPABILITY_IAM
-```
+Deployments are handled by Github Actions. To deploy to development, qa, or production, commit code to the `development`, `qa`, and `master` branches on origin, respectively.
