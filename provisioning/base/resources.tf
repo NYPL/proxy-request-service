@@ -47,4 +47,10 @@ resource "aws_lambda_function" "lambda_instance" {
   # Trigger pulling code from S3 when the zip has changed:
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
 
+  # Load ENV vars from ./config/{environment}.env
+  environment {
+    variables = {
+      for tuple in regexall("(.*?)=(.*)", file("../../config/${var.environment}.env")) : tuple[0] => tuple[1]
+    }
+  }
 }
