@@ -34,7 +34,7 @@ resource "aws_s3_object" "uploaded_zip" {
 resource "aws_lambda_function" "lambda_instance" {
   description   = "Lambda that sits behind API Gateway to serve as a proxy for arbitrary endpoints that we want to make asynchronous."
   function_name = "ProxyRequestService-${var.environment}"
-  handler       = "index.handler"
+  handler       = "application.handle_event"
   memory_size   = 128
   role          = "arn:aws:iam::946183545209:role/lambda-full-access"
   runtime       = "ruby3.3"
