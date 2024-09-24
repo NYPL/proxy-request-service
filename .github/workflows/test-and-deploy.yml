@@ -31,13 +31,11 @@ jobs:
         run: |
           bundle install
       - uses: hashicorp/setup-terraform@v2
-      - name: Import existing Lambda function
+      - name: Apply Terraform changes to QA
         run: |
           terraform -chdir=provisioning/qa init -input=false
-          terraform -chdir=provisioning/qa import aws_lambda_function.lambda_instance ProxyRequestService-qa || echo "Lambda already imported"
+          terraform -chdir=provisioning/qa apply -auto-approve -input=false
 
-      - name: Apply Terraform changes to QA
-        run: terraform -chdir=provisioning/qa apply -auto-approve -input=false
 
   deploy-lambda-production:
     runs-on: ubuntu-latest
@@ -58,7 +56,7 @@ jobs:
         run: |
           bundle install
       - uses: hashicorp/setup-terraform@v2
-      - name: Deploy app to QA
+      - name: Deploy app to Production
         run: |
           terraform -chdir=provisioning/production init -input=false
           terraform -chdir=provisioning/production apply -auto-approve -input=false
