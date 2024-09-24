@@ -15,3 +15,27 @@ module "base" {
   source = "../base"
   environment = "qa"
 }
+
+resource "aws_lambda_function" "lambda_instance" {
+  description   = "Lambda that sits behind API Gateway to serve as a proxy for arbitrary endpoints that we want to make asynchronous."
+  function_name = "ProxyRequestService-qa"
+  handler       = "application.handle_event"
+  memory_size   = 128
+  role          = "arn:aws:iam::946183545209:role/lambda-full-access"
+  runtime       = "ruby3.3"
+  timeout       = 60
+
+  # Location of the zipped code in S3:
+  s3_bucket     = aws_s3_object.uploaded_zip.bucket
+  s3_key        = aws_s3_object.uploaded_zip.key
+
+  # Trigger pulling code from S3 when the zip has changed:
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+
+  # Load ENV vars from ./config/{environment}.env
+  environment {
+    variables = {
+      for tuple in regexall("(.*?)=(.*)", file("../../config/qa.env")) : tuple[0] => tuple[1]
+    }
+  }
+}

@@ -36,7 +36,7 @@ jobs:
           terraform -chdir=provisioning/qa init -input=false
           terraform -chdir=provisioning/qa import aws_lambda_function.lambda_instance ProxyRequestService-qa || echo "Lambda already imported"
 
-      - name: Apply Terraform changest o QA
+      - name: Apply Terraform changes to QA
         run: terraform -chdir=provisioning/qa apply -auto-approve -input=false
 
   deploy-lambda-production:
