@@ -7,13 +7,13 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: application.handle_event
-      Runtime: ruby2.5
+      Runtime: ruby3.3
       Timeout: 10
       Environment:
         Variables:
-          SQS_QUEUE_URL: AQECAHh7ea2tyZ6phZgT4B9BDKwguhlFtRC6hgt+7HbmeFsrsgAAAJ8wgZwGCSqGSIb3DQEHBqCBjjCBiwIBADCBhQYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAyGzmQLgDBtSUal/G0CARCAWCPYxUwBOm/dzWVt+72KuNd38rXxzccgc8SJWnWNwVaOzLl1iecDiMEfu5Y6qilQ/0auMpVMf0DJ6R4HEHi5woTQB8l8npfqEVATzZ6aP/YhSP5kPpdW0Qk=
+          SQS_QUEUE_URL: AQECAHh7ea2tyZ6phZgT4B9BDKwguhlFtRC6hgt+7HbmeFsrsgAAAKUwgaIGCSqGSIb3DQEHBqCBlDCBkQIBADCBiwYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAyzzN8LifWxHINYQxACARCAXtO+EtzYYc1+mu8Nb4P8hPbfV3QfJSC9HUXb2rjXYMNkZlSKna/k2k/B2wxg28PAClU8dDjQKh2bhZznlQI2ohuRQdDLyCg6jnOdHyC9NV3N5i4KTttm+o65z/LcugM=
           LOG_LEVEL: debug
           NYPL_OAUTH_URL: https://isso.nypl.org/
           NYPL_OAUTH_ID: AQECAHh7ea2tyZ6phZgT4B9BDKwguhlFtRC6hgt+7HbmeFsrsgAAAGowaAYJKoZIhvcNAQcGoFswWQIBADBUBgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDJgrQmkr7pQa4WSF1gIBEIAnLgWjuqFllMpCQWGT/eC/7n/pxFN87zaoJF19zCRHH/ulh4BICTZf
           NYPL_OAUTH_SECRET: AQECAHh7ea2tyZ6phZgT4B9BDKwguhlFtRC6hgt+7HbmeFsrsgAAAIcwgYQGCSqGSIb3DQEHBqB3MHUCAQAwcAYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAx8ZuLftGsgDmOxxBICARCAQ3ZSNw6hWlqI73kLJcs8Zg3O13PKiATfXXDUvGFim/KolFmQDCsVp7JFF9Jg01U++KNtcGJiVev7z3OAPNXc3fqGp6k=
-          PLATFORM_API_BASE_URL: https://platform.nypl.org/api/v0.1/
+          PLATFORM_API_BASE_URL: https://qa-platform.nypl.org/api/v0.1/
