@@ -14,21 +14,21 @@ variable "environment" {
 }
 
 # Package the app as a zip:
-data "archive_file" "lambda_zip" {
-  type        = "zip"
-  output_path = "${path.module}/dist.zip"
-  source_dir  = "../../"
-  excludes    = [".git", ".terraform", "provisioning"]
-}
+# data "archive_file" "lambda_zip" {
+#   type        = "zip"
+#   output_path = "${path.module}/dist.zip"
+#   source_dir  = "../../"
+#   excludes    = [".git", ".terraform", "provisioning"]
+# }
 
 # Upload the zipped app to S3:
-resource "aws_s3_object" "uploaded_zip" {
-  bucket = "nypl-github-actions-builds-${var.environment}"
-  key    = "proxy-request-service-${var.environment}-dist.zip"
-  acl    = "private"
-  source = data.archive_file.lambda_zip.output_path
-  etag   = filemd5(data.archive_file.lambda_zip.output_path)
-}
+# resource "aws_s3_object" "uploaded_zip" {
+#   bucket = "nypl-github-actions-builds-${var.environment}"
+#   key    = "proxy-request-service-${var.environment}-dist.zip"
+#   acl    = "private"
+#   source = data.archive_file.lambda_zip.output_path
+#   etag   = filemd5(data.archive_file.lambda_zip.output_path)
+# }
 
 # Create the lambda:
 # resource "aws_lambda_function" "lambda_instance" {
