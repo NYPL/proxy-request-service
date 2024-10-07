@@ -34,7 +34,7 @@ All config is in sam.[ENVIRONMENT].yml templates, encrypted as necessary.
 The following will invoke the lambda against the sample `event.json`:
 
 ```sh
-sam local invoke --event event.json --region us-east-1 --template sam.[ENVIRONMENT].yml --profile nypl-digital-dev
+AWS_ACCESS_KEY_ID=[your access key id] AWS_SECRET_ACCESS_KEY=[your secret access key] sam local invoke --event event.json --region us-east-1 --template sam.[ENVIRONMENT].yml 
 ```
 
 Note also that if you choose `sam.local.yml`, you'll need to start SQS via Localstack as a prerequesite to above.
@@ -72,13 +72,13 @@ That will enable you to use the `aws` cli using `--profile local`, which means y
 Add the queue:
 
 ```sh
-aws sqs create-queue --region us-east-1 --queue-name proxy-request-service --endpoint http://localhost:4566 --profile local
+aws sqs create-queue --region us-east-1 --queue-name proxy-request-service --endpoint http://localhost:4566 --profile nypl-digital-dev local
 ```
 
 When populating an SQS queue, the `aws sqs` cli tool may be useful for inspecting the messages written. For example, when populating a localstack SQS, run the following to pop the last 10 messages:
 
 ```sh
-aws sqs receive-message --region us-east-1 --queue-url http://localhost:4566/000000000000/proxy-request-service --endpoint http://localhost:4566 --profile local --attribute-names All --message-attribute-names All --max-number-of-messages 10
+aws sqs receive-message --region us-east-1 --queue-url http://localhost:4566/000000000000/proxy-request-service --endpoint http://localhost:4566 --profile nypl-digital-dev --attribute-names All --message-attribute-names All --max-number-of-messages 10
 ```
 
 #### Modifying `event.json`
@@ -86,7 +86,7 @@ aws sqs receive-message --region us-east-1 --queue-url http://localhost:4566/000
 Update `event.json` as follows:
 
 ```
-sam local generate-event apigateway aws-proxy --path api/v0.1/checkout-request --method POST --body "{ \"itemBarcode\": \"01234567891011\", \"patronBarcode\": \"10119876543210\", \"owningInstitutionId\": \"NYPL\", \"desiredDueDate\": \"2020-03-19T04:00:00Z\" }" > event.json
+AWS_ACCESS_KEY_ID=[your access key id] AWS_SECRET_ACCESS_KEY=[your secret access key] sam local generate-event apigateway aws-proxy --path api/v0.1/checkout-request --method POST --body "{ \"itemBarcode\": \"01234567891011\", \"patronBarcode\": \"10119876543210\", \"owningInstitutionId\": \"NYPL\", \"desiredDueDate\": \"2020-03-19T04:00:00Z\" }" > event.json
 ```
 
 ### Running server locally
@@ -94,7 +94,7 @@ sam local generate-event apigateway aws-proxy --path api/v0.1/checkout-request -
 To run the server locally using a SAM template with a configured API Gateway event:
 
 ```
-sam local start-api --region us-east-1 --template sam.local-with-api-gateway.yml --profile [aws profile]
+AWS_ACCESS_KEY_ID=[your access key id] AWS_SECRET_ACCESS_KEY=[your secret access key] sam local start-api --region us-east-1 --template sam.local-with-api-gateway.yml
 ```
 
 ### Gemfile Changes
