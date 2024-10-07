@@ -72,13 +72,13 @@ That will enable you to use the `aws` cli using `--profile local`, which means y
 Add the queue:
 
 ```sh
-aws sqs create-queue --region us-east-1 --queue-name proxy-request-service --endpoint http://localhost:4566 --profile nypl-digital-dev local
+aws sqs create-queue --region us-east-1 --queue-name proxy-request-service --endpoint http://localhost:4566 --profile local
 ```
 
 When populating an SQS queue, the `aws sqs` cli tool may be useful for inspecting the messages written. For example, when populating a localstack SQS, run the following to pop the last 10 messages:
 
 ```sh
-aws sqs receive-message --region us-east-1 --queue-url http://localhost:4566/000000000000/proxy-request-service --endpoint http://localhost:4566 --profile nypl-digital-dev --attribute-names All --message-attribute-names All --max-number-of-messages 10
+aws sqs receive-message --region us-east-1 --queue-url http://localhost:4566/000000000000/proxy-request-service --endpoint http://localhost:4566 --profile local --attribute-names All --message-attribute-names All --max-number-of-messages 10
 ```
 
 #### Modifying `event.json`
