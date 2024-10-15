@@ -17,19 +17,19 @@ class SqsClient
 
     @sqs_queue_url = sqs_config[:queue_url]
 
-    # if ENV['AWS_ACCESS_KEY_ID']
-    #   @sqs = Aws::SQS::Client.new(
-    #     region: 'us-east-1',
-    #     access_key_id: ENV['AWS_ACCESS_KEY_ID'],
-    #     secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
-    #     endpoint: sqs_config[:endpoint]
-    #   )   
-    # else   
-    @sqs = Aws::SQS::Client.new(
-      region: 'us-east-1',
-      endpoint: sqs_config[:endpoint]
-    )   
-    # end
+    if ENV['LOCAL']
+      @sqs = Aws::SQS::Client.new(
+        region: 'us-east-1',
+        access_key_id: ENV['AWS_ACCESS_KEY_ID'],
+        secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
+        endpoint: sqs_config[:endpoint]
+      )
+    else
+      @sqs = Aws::SQS::Client.new(
+        region: 'us-east-1',
+        endpoint: sqs_config[:endpoint]
+      )
+    end
   end
 
   # Parses given SQS URL, returning a Hash with:

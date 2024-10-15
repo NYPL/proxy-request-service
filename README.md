@@ -34,7 +34,7 @@ All config is in sam.[ENVIRONMENT].yml templates, encrypted as necessary.
 The following will invoke the lambda against the sample `event.json`:
 
 ```sh
-AWS_ACCESS_KEY_ID=[your access key id] AWS_SECRET_ACCESS_KEY=[your secret access key] sam local invoke --event event.json --region us-east-1 --template sam.[ENVIRONMENT].yml 
+sam local invoke --event event.json --region us-east-1 --template sam.qa.yml --profile nypl-digital-dev
 ```
 
 Note also that if you choose `sam.local.yml`, you'll need to start SQS via Localstack as a prerequesite to above.
