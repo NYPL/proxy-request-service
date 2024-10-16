@@ -34,7 +34,7 @@ All config is in sam.[ENVIRONMENT].yml templates, encrypted as necessary.
 The following will invoke the lambda against the sample `event.json`:
 
 ```sh
-AWS_ACCESS_KEY_ID=[your access key id] AWS_SECRET_ACCESS_KEY=[your secret access key] sam local invoke --event event.json --region us-east-1 --template sam.[ENVIRONMENT].yml 
+sam local invoke --event event.json --region us-east-1 --template sam.[ENVIRONMENT].yml --profile nypl-digital-dev
 ```
 
 Note also that if you choose `sam.local.yml`, you'll need to start SQS via Localstack as a prerequesite to above.
@@ -86,7 +86,7 @@ aws sqs receive-message --region us-east-1 --queue-url http://localhost:4566/000
 Update `event.json` as follows:
 
 ```
-AWS_ACCESS_KEY_ID=[your access key id] AWS_SECRET_ACCESS_KEY=[your secret access key] sam local generate-event apigateway aws-proxy --path api/v0.1/checkout-request --method POST --body "{ \"itemBarcode\": \"01234567891011\", \"patronBarcode\": \"10119876543210\", \"owningInstitutionId\": \"NYPL\", \"desiredDueDate\": \"2020-03-19T04:00:00Z\" }" > event.json
+sam local generate-event apigateway aws-proxy --path api/v0.1/checkout-request --method POST --body "{ \"itemBarcode\": \"01234567891011\", \"patronBarcode\": \"10119876543210\", \"owningInstitutionId\": \"NYPL\", \"desiredDueDate\": \"2020-03-19T04:00:00Z\" }" > event.json --profile nypl-digital-dev
 ```
 
 ### Running server locally
@@ -94,7 +94,7 @@ AWS_ACCESS_KEY_ID=[your access key id] AWS_SECRET_ACCESS_KEY=[your secret access
 To run the server locally using a SAM template with a configured API Gateway event:
 
 ```
-AWS_ACCESS_KEY_ID=[your access key id] AWS_SECRET_ACCESS_KEY=[your secret access key] sam local start-api --region us-east-1 --template sam.local-with-api-gateway.yml
+sam local start-api --region us-east-1 --template sam.local-with-api-gateway.yml --profile nypl-digital-dev
 ```
 
 ### Gemfile Changes
