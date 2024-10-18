@@ -17,19 +17,14 @@ class SqsClient
 
     @sqs_queue_url = sqs_config[:queue_url]
 
-    # if ENV['AWS_ACCESS_KEY_ID']
-    #   @sqs = Aws::SQS::Client.new(
-    #     region: 'us-east-1',
-    #     access_key_id: ENV['AWS_ACCESS_KEY_ID'],
-    #     secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
-    #     endpoint: sqs_config[:endpoint]
-    #   )   
-    # else   
+    # To work around https://github.com/aws/aws-sam-cli/issues/3118:
+    ENV.delete "AWS_SESSION_TOKEN" if ENV['AWS_SESSION_TOKEN'] == ''
+
     @sqs = Aws::SQS::Client.new(
       region: 'us-east-1',
       endpoint: sqs_config[:endpoint]
-    )   
-    # end
+    ) if @sqs.nil?
+    @sqs
   end
 
   # Parses given SQS URL, returning a Hash with:
